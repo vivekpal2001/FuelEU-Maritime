@@ -2,25 +2,6 @@
 
 This document details how AI agents were used throughout the development of the FuelEU Maritime Compliance Platform over a 15-hour development session.
 
-## Development Timeline
-
-| Time | Commit | Description |
-|------|--------|-------------|
-| T+0h (15h ago) | Initial Setup | Project scaffolding, package.json, Prisma schema |
-| T+2h 15m | Domain Layer | Entities, value objects, domain services |
-| T+3h 45m | Application Layer | Use cases for CB, banking, pooling |
-| T+5h 30m | Outbound Adapters | PostgreSQL repositories with Prisma |
-| T+7h 10m | Inbound Adapters | Express HTTP controllers |
-| T+8h 40m | Database Scripts | SQL migrations and seed data |
-| T+9h 55m | Frontend Core | Domain entities and API client |
-| T+11h 20m | Frontend Pages | Routes, Compare, Banking, Pooling tabs |
-| T+12h 35m | Styling & Theme | TailwindCSS, dark/light mode |
-| T+13h 50m | Unit Tests | Domain services and use cases |
-| T+14h 25m | Integration Tests | HTTP endpoints via Supertest |
-| T+14h 45m | Bug Fixes | Test failures and edge cases |
-| T+15h | Documentation | README, AGENT_WORKFLOW, REFLECTION |
-
----
 
 ## Agents Used
 
