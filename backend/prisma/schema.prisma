@@ -1,0 +1,165 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Vessel {
+  id              String    @id @default(uuid())
+  name            String
+  imo             String    @unique
+  type            String
+  flag            String
+  grossTonnage    Int       @map("gross_tonnage")
+  deadweight      Int
+  complianceScore Float     @default(0) @map("compliance_score")
+  status          String    @default("active")
+  createdAt       DateTime  @default(now()) @map("created_at")
+  updatedAt       DateTime  @updatedAt @map("updated_at")
+  
+  voyages         Voyage[]
+  bankingAccount  BankingAccount?
+
+  @@map("vessels")
+}
+
+model Voyage {
+  id                String    @id @default(uuid())
+  vesselId          String    @map("vessel_id")
+  vessel            Vessel    @relation(fields: [vesselId], references: [id], onDelete: Cascade)
+  voyageNumber      String    @map("voyage_number")
+  departurePort     String    @map("departure_port")
+  arrivalPort       String    @map("arrival_port")
+  departureDate     DateTime  @map("departure_date")
+  arrivalDate       DateTime  @map("arrival_date")
+  distance          Float
+  fuelConsumed      Float     @map("fuel_consumed")
+  fuelType          String    @map("fuel_type")
+  co2Emissions      Float     @map("co2_emissions")
+  ghgIntensity      Float     @map("ghg_intensity")
+  complianceBalance Float     @map("compliance_balance")
+  status            String    @default("completed")
+  createdAt         DateTime  @default(now()) @map("created_at")
+  updatedAt         DateTime  @updatedAt @map("updated_at")
+
+  @@map("voyages")
+}
+
+model Route {
+  id              String   @id @default(uuid())
+  routeId         String   @unique @map("route_id")
+  vesselType      String   @map("vessel_type")
+  fuelType        String   @map("fuel_type")
+  year            Int
+  ghgIntensity    Float    @map("ghg_intensity")
+  fuelConsumption Float    @map("fuel_consumption")
+  distance        Float
+  totalEmissions  Float    @map("total_emissions")
+  isBaseline      Boolean  @default(false) @map("is_baseline")
+  createdAt       DateTime @default(now()) @map("created_at")
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  @@map("routes")
+}
+
+model ShipCompliance {
+  id        String   @id @default(uuid())
+  shipId    String   @map("ship_id")
+  year      Int
+  cbGco2eq  Float    @map("cb_gco2eq")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([shipId, year])
+  @@map("ship_compliance")
+}
+
+model BankEntry {
+  id           String   @id @default(uuid())
+  shipId       String   @map("ship_id")
+  year         Int
+  amountGco2eq Float    @map("amount_gco2eq")
+  type         String   @default("bank") // bank or apply
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  @@map("bank_entries")
+}
+
+model Pool {
+  id              String       @id @default(uuid())
+  year            Int
+  name            String?      // Added missing fields for pool management
+  description     String?
+  totalBalance    Float        @default(0) @map("total_balance")
+  status          String       @default("active")
+  createdAt       DateTime     @default(now()) @map("created_at")
+  updatedAt       DateTime     @updatedAt @map("updated_at")
+  members         PoolMember[]
+
+  @@map("pools")
+}
+
+model PoolMember {
+  id       String  @id @default(uuid())
+  poolId   String  @map("pool_id")
+  pool     Pool    @relation(fields: [poolId], references: [id], onDelete: Cascade)
+  shipId   String  @map("ship_id")
+  cbBefore Float   @map("cb_before")
+  cbAfter  Float   @map("cb_after")
+  share    Float   @default(0) // Added share field for pool allocation
+  vesselId String? @map("vessel_id") // Added vesselId for vessel relationship
+
+  @@unique([poolId, shipId])
+  @@map("pool_members")
+}
+
+model BankingAccount {
+  id              String        @id @default(uuid())
+  vesselId        String        @unique @map("vessel_id")
+  vessel          Vessel        @relation(fields: [vesselId], references: [id], onDelete: Cascade)
+  balance         Float         @default(0)
+  surplus         Float         @default(0)
+  deficit         Float         @default(0)
+  createdAt       DateTime      @default(now()) @map("created_at")
+  updatedAt       DateTime      @updatedAt @map("updated_at")
+  
+  transactions    Transaction[]
+
+  @@map("banking_accounts")
+}
+
+model Transaction {
+  id              String         @id @default(uuid())
+  accountId       String         @map("account_id")
+  account         BankingAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  type            String
+  amount          Float
+  description     String?
+  balanceBefore   Float          @map("balance_before")
+  balanceAfter    Float          @map("balance_after")
+  relatedEntityId String?        @map("related_entity_id")
+  createdAt       DateTime       @default(now()) @map("created_at")
+
+  @@map("transactions")
+}
+
+model FuelType {
+  id              String  @id @default(uuid())
+  name            String  @unique
+  emissionFactor  Float   @map("emission_factor")
+  category        String
+
+  @@map("fuel_types")
+}
+
+model ComplianceThreshold {
+  id        String @id @default(uuid())
+  year      Int    @unique
+  target    Float
+  penalty   Float
+
+  @@map("compliance_thresholds")
+}
