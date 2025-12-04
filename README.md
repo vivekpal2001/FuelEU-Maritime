@@ -17,22 +17,22 @@ Built with **Hexagonal Architecture** (Ports & Adapters) for clean separation of
 ## Screenshots
 
 ### Routes Dashboard
-![Routes Dashboard](./images/Screenshot%202025-12-04%20at%2010.48.11%20PM.png)
+![Routes Dashboard](./images/routes.png)
 
 ### Route Comparison
-![Route Comparison](./images/Screenshot%202025-12-04%20at%2010.48.23%20PM.png)
+![Route Comparison](./images/compare.png)
 
-### Compliance Balance View
-![Compliance Balance](./images/Screenshot%202025-12-04%20at%2010.48.33%20PM.png)
+### Banking View
+![Compliance Balance](./images/banking.png)
 
 ### Banking Interface
-![Banking Interface](./images/Screenshot%202025-12-04%20at%2010.48.44%20PM.png)
+![Banking Interface](./images/banking2.png)
 
 ### Pooling Management
-![Pooling Management](./images/Screenshot%202025-12-04%20at%2010.49.15%20PM.png)
+![Pooling Management](./images/pooling.png)
 
 ### Performance Analytics
-![Performance Analytics](./images/Screenshot%202025-12-04%20at%2011.00.24%20PM.png)
+![Performance Analytics](./images/lightmode.png)
 
 ---
 
